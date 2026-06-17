@@ -77,7 +77,8 @@
     .hero-left{position:relative;z-index:1}
     .hero-eye{font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--ac);margin-bottom:28px;display:flex;align-items:center;gap:12px;opacity:0;animation:fU .6s ease .1s forwards}
     .hero-eye::before{content:'';width:24px;height:1px;background:var(--ac)}
-    .hero-h{font-family:'Inter',sans-serif;font-size:clamp(54px,7vw,100px);font-weight:900;line-height:.9;letter-spacing:-.04em;margin-bottom:32px}
+    .hero-h{font-family:'Inter',sans-serif;font-size:clamp(46px,7vw,100px);font-weight:900;line-height:.9;letter-spacing:-.04em;margin-bottom:32px}
+    .hero-h .hero-line{display:block;white-space:nowrap}
     .hero-h .ww{display:inline-block;overflow:hidden;vertical-align:bottom}
     .hero-h .w{display:inline-block;opacity:0;transform:translateY(110%);animation:wUp .9s var(--ease) forwards}
     .hero-h .ac{color:var(--ac)}
@@ -291,17 +292,6 @@
     .hero-h .ww{margin-right:.22em}
     .hero-h br+.ww,.hero-h .ww:last-child{margin-right:0}
 
-    /* ── PRELOADER ─── */
-    .preloader{position:fixed;inset:0;background:var(--bg);z-index:9500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;pointer-events:none}
-    .preloader.out{animation:plOut .75s var(--ease) .1s forwards}
-    @keyframes plOut{0%{clip-path:inset(0 0 0% 0)}100%{clip-path:inset(0 0 100% 0)}}
-    .pl-logo{font-family:'Inter',sans-serif;font-size:26px;font-weight:900;letter-spacing:-.04em;animation:plFade .5s ease forwards}
-    .pl-logo b{color:var(--ac)}
-    .pl-bar{width:100px;height:1px;background:var(--bd);overflow:hidden}
-    .pl-prog{height:100%;background:var(--ac);width:0;animation:plLoad .75s ease .1s forwards}
-    @keyframes plFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-    @keyframes plLoad{to{width:100%}}
-
     /* ── ACTIVE NAV ─── */
     .nav-links a{position:relative}
     .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--ac);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease)}
@@ -370,11 +360,6 @@
   </style>
 </head>
 <body>
-  <!-- PRELOADER -->
-  <div class="preloader" id="preloader">
-    <div class="pl-logo">Flow<b>Build</b></div>
-    <div class="pl-bar"><div class="pl-prog"></div></div>
-  </div>
 
   <!-- MOBILE NAV OVERLAY -->
   <div class="mob-nav" id="mobNav">
@@ -608,21 +593,18 @@
       ww.appendChild(w); return ww;
     }
 
-    // Line 1: "We build [rotating] sites."
-    const line1=document.createElement('div');
+    // Line 1: "We build"
+    const line1=document.createElement('div'); line1.className='hero-line';
     line1.appendChild(makeWord('We', 0.22));
     line1.appendChild(makeWord('build', 0.36));
-    // rotating word slot
+    heroH.appendChild(line1);
+    // Line 2: "[rotating] sites." — adjective rotates, always stays on line two
+    const line2=document.createElement('div'); line2.className='hero-line';
     const slot=document.createElement('span'); slot.className='rotate-slot';
     const inner=document.createElement('span'); inner.className='rotate-inner'; inner.textContent=rotWords[0];
-    slot.appendChild(inner); line1.appendChild(slot);
-    line1.appendChild(makeWord('sites.', 0.5));
-    heroH.appendChild(line1);
-    heroH.appendChild(document.createElement('br'));
-    // Line 2: "Real results. Fast."
-    heroH.appendChild(makeWord('Real', 0.64));
-    heroH.appendChild(makeWord('results.', 0.78, 'ac it'));
-    heroH.appendChild(makeWord('Fast.', 0.92));
+    slot.appendChild(inner); line2.appendChild(slot);
+    line2.appendChild(makeWord('sites.', 0.5));
+    heroH.appendChild(line2);
 
     // Word rotate logic
     setInterval(()=>{
@@ -730,20 +712,6 @@
     },{threshold:0.3});
     const pt=document.getElementById('procTrack');
     if(pt)procIO.observe(pt);
-
-    // ── Dismiss preloader once page is ready ──────────────
-    (function dismissPreloader(){
-      const pl=document.getElementById('preloader');
-      if(!pl) return;
-      const hide=()=>{
-        pl.classList.add('out');
-        setTimeout(()=>{ pl.style.display='none'; }, 900);
-      };
-      if(document.readyState==='complete'){ setTimeout(hide,600); }
-      else { window.addEventListener('load',()=>setTimeout(hide,600)); }
-      // Safety fallback: never let the loader trap the page
-      setTimeout(hide,3500);
-    })();
   </script>
 </body>
 </html>
