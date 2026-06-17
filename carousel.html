@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlowBuild — Social Carousel 4:5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080807; --fg:#F0EBE0; --mu:#68635C; --mu2:#9A938A;
+    --ac:#22C55E; --ac-d:#16A34A; --bd:#1E1E1C;
+    --surf:#101010; --surf2:#15150F;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#000}
+  body{font-family:'Inter',sans-serif;color:var(--fg);-webkit-font-smoothing:antialiased}
+  em,.serif{font-family:'EB Garamond',serif;font-style:italic;font-weight:500}
+
+  /* ── Slide frame: exact 4:5 (1080×1350) ─────────────── */
+  .stage{display:flex;flex-direction:column;align-items:center;gap:40px;padding:40px}
+  .slide{
+    position:relative;width:1080px;height:1350px;overflow:hidden;
+    background:var(--bg);color:var(--fg);flex:0 0 auto;
+    display:flex;flex-direction:column;
+  }
+  /* aurora + texture base on every slide */
+  .slide::before{content:'';position:absolute;inset:0;z-index:0;
+    background:
+      radial-gradient(900px 700px at 78% -8%, rgba(34,197,94,.20), transparent 60%),
+      radial-gradient(800px 800px at -12% 108%, rgba(34,197,94,.12), transparent 60%),
+      radial-gradient(600px 500px at 50% 50%, rgba(22,30,18,.5), transparent 70%);
+  }
+  .slide::after{content:'';position:absolute;inset:0;z-index:50;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size:200px;opacity:.5;mix-blend-mode:overlay}
+  .inner{position:relative;z-index:10;flex:1;display:flex;flex-direction:column;padding:80px}
+
+  /* ── Shared header (logo + counter) ─────────────────── */
+  .topbar{display:flex;align-items:center;justify-content:space-between}
+  .logo{font-size:34px;font-weight:900;letter-spacing:-.03em}
+  .logo b{color:var(--ac);font-weight:900}
+  .counter{font-size:18px;font-weight:600;letter-spacing:.02em;color:var(--mu2);
+    font-variant-numeric:tabular-nums}
+  .counter span{color:var(--ac)}
+  .eyebrow{display:inline-flex;align-items:center;gap:14px;font-size:16px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ac)}
+  .eyebrow::before{content:'';width:40px;height:1.5px;background:var(--ac);opacity:.8}
+
+  /* ── COVER (slide 1) ────────────────────────────────── */
+  .cover .inner{justify-content:space-between}
+  .cover-mid{display:flex;flex-direction:column;gap:30px}
+  .cover h1{font-size:104px;font-weight:900;line-height:.94;letter-spacing:-.045em}
+  .cover h1 em{color:var(--ac)}
+  .cover-sub{font-size:27px;line-height:1.55;color:var(--mu2);max-width:760px}
+  .cover-foot{display:flex;align-items:flex-end;justify-content:space-between}
+  .swipe{display:flex;align-items:center;gap:16px;font-size:19px;font-weight:600;
+    letter-spacing:.04em;color:var(--fg)}
+  .swipe .arrows{display:flex;gap:-2px;color:var(--ac);font-size:26px;letter-spacing:-6px}
+  .cover-tags{display:flex;flex-wrap:wrap;gap:10px;max-width:360px;justify-content:flex-end}
+  .ct{font-size:15px;font-weight:600;color:var(--mu2);border:1px solid var(--bd);
+    border-radius:100px;padding:8px 16px;background:rgba(255,255,255,.02)}
+
+  /* ── DESIGN slides (2–7) ────────────────────────────── */
+  .design .inner{justify-content:flex-start;gap:0}
+  .design-cat{margin-top:54px;display:inline-flex;align-self:flex-start;align-items:center;gap:10px;
+    font-size:16px;font-weight:700;letter-spacing:.04em;color:var(--ac);
+    background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.28);
+    border-radius:100px;padding:9px 18px}
+  .design-cat::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--ac);
+    box-shadow:0 0 12px var(--ac)}
+  .design h2{margin-top:22px;font-size:72px;font-weight:900;line-height:.98;letter-spacing:-.04em}
+  .design-url{margin-top:16px;font-size:21px;font-weight:500;color:var(--mu2)}
+  .design-url b{color:var(--fg);font-weight:600}
+
+  /* browser mockup */
+  .mock{margin-top:auto;margin-bottom:6px;border-radius:18px;overflow:hidden;
+    background:var(--surf);border:1px solid var(--bd);
+    box-shadow:0 2px 0 rgba(255,255,255,.04) inset,
+      0 40px 80px -30px rgba(0,0,0,.9),
+      0 30px 90px -40px rgba(34,197,94,.35);}
+  .chrome{height:50px;display:flex;align-items:center;gap:16px;padding:0 22px;
+    background:#0d0d0c;border-bottom:1px solid var(--bd)}
+  .dots{display:flex;gap:9px}
+  .dots i{width:13px;height:13px;border-radius:50%;display:block}
+  .dots i:nth-child(1){background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
+  .addr{flex:1;height:30px;border-radius:8px;background:#070706;border:1px solid var(--bd);
+    display:flex;align-items:center;padding:0 16px;font-size:15px;color:var(--mu2);gap:9px}
+  .addr svg{width:13px;height:13px;opacity:.7}
+  .shot{width:100%;height:720px;object-fit:cover;object-position:top center;display:block}
+
+  /* ── CTA (slide 8) ──────────────────────────────────── */
+  .cta .inner{justify-content:space-between}
+  .cta-mid{display:flex;flex-direction:column;gap:34px;margin-top:40px}
+  .cta h2{font-size:96px;font-weight:900;line-height:.95;letter-spacing:-.045em}
+  .cta h2 em{color:var(--ac)}
+  .cta-sub{font-size:27px;line-height:1.55;color:var(--mu2);max-width:720px}
+  .cta-btn{align-self:flex-start;display:inline-flex;align-items:center;gap:14px;
+    background:var(--ac);color:#05140a;font-size:24px;font-weight:800;letter-spacing:-.01em;
+    padding:24px 44px;border-radius:14px;box-shadow:0 24px 60px -24px rgba(34,197,94,.7)}
+  .cta-foot{display:flex;align-items:center;justify-content:space-between;
+    border-top:1px solid var(--bd);padding-top:36px}
+  .cta-site{font-size:30px;font-weight:800;letter-spacing:-.02em}
+  .cta-site b{color:var(--ac)}
+  .cta-handle{font-size:20px;color:var(--mu2);font-weight:500}
+
+  /* preview-only label (not in screenshots) */
+  .plabel{color:#555;font:600 14px Inter;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<div class="stage" id="stage"></div>
+<script>
+  const designs = [
+    {name:'Niall Smith<br>Architects', cat:'Architecture',     url:'niallsmitharchitects.ie', img:'screenshots/niall-smith-arch.png'},
+    {name:'Prestige Barbers',          cat:'Barbershop',        url:'prestige-barbers.ie',     img:'screenshots/prestige-barbers.png'},
+    {name:'Gym an Rí',                 cat:'Gym &amp; Fitness', url:'gymanri.ie',              img:'screenshots/gym-an-ri.png'},
+    {name:'AB Home<br>Perfection',     cat:'Renovations',       url:'abhomeperfection.ie',     img:'screenshots/ab-home-perfection.png'},
+    {name:'RF Electrical',             cat:'Electrical',        url:'rfelectrical.ie',         img:'screenshots/rf-electrical.png'},
+    {name:'MD Recovery',               cat:'Vehicle Recovery',  url:'mdrecovery.ie',           img:'screenshots/md-recovery.png'},
+  ];
+  const total = designs.length;
+
+  const logo = '<div class="logo">Flow<b>Build</b></div>';
+  const lock = svg => svg;
+  const padlock = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+
+  const slides = [];
+
+  // 1 — COVER
+  slides.push(`
+    <section class="slide cover">
+      <div class="inner">
+        <div class="topbar">${logo}<div class="counter">Portfolio <span>’26</span></div></div>
+        <div class="cover-mid">
+          <div class="eyebrow">Web Design · Local Irish Business</div>
+          <h1>Websites we've<br>built for local<br><em>businesses.</em></h1>
+          <p class="cover-sub">No templates. No page builders. Just clean, custom sites that actually bring in customers — swipe through a few of our favourites.</p>
+        </div>
+        <div class="cover-foot">
+          <div class="swipe">Swipe to view <span class="arrows">››</span></div>
+          <div class="cover-tags">
+            <span class="ct">Custom-built</span><span class="ct">Live in 7 days</span>
+            <span class="ct">SEO ready</span><span class="ct">Irish owned</span>
+          </div>
+        </div>
+      </div>
+    </section>`);
+
+  // 2–7 — DESIGNS
+  designs.forEach((d,i)=>{
+    const n = String(i+1).padStart(2,'0');
+    slides.push(`
+    <section class="slide design">
+      <div class="inner">
+        <div class="topbar">${logo}<div class="counter"><span>${n}</span> / ${String(total).padStart(2,'0')}</div></div>
+        <div class="design-cat">${d.cat}</div>
+        <h2>${d.name}</h2>
+        <div class="design-url"><b>${d.url}</b> — designed &amp; built by FlowBuild</div>
+        <div class="mock">
+          <div class="chrome">
+            <div class="dots"><i></i><i></i><i></i></div>
+            <div class="addr">${padlock}${d.url}</div>
+          </div>
+          <img class="shot" src="${d.img}" alt="${d.url}">
+        </div>
+      </div>
+    </section>`);
+  });
+
+  // 8 — CTA
+  slides.push(`
+    <section class="slide cta">
+      <div class="inner">
+        <div class="topbar">${logo}<div class="counter">Your turn <span>→</span></div></div>
+        <div class="cta-mid">
+          <div class="eyebrow">Let's build yours</div>
+          <h2>Want a site<br>like <em>these?</em></h2>
+          <p class="cta-sub">We design and build custom websites for local businesses — live in as little as 7 days. Book a free, no-pressure quote today.</p>
+          <span class="cta-btn">Get a free quote →</span>
+        </div>
+        <div class="cta-foot">
+          <div class="cta-site">Flow<b>Build</b> · flowbuildai.ie</div>
+          <div class="cta-handle">DM us “SITE” to start</div>
+        </div>
+      </div>
+    </section>`);
+
+  const stage = document.getElementById('stage');
+  const params = new URLSearchParams(location.search);
+  const only = params.get('slide');     // 1-based single slide for export
+  if(only){
+    const idx = parseInt(only,10)-1;
+    stage.style.padding='0'; stage.style.gap='0';
+    stage.innerHTML = slides[idx] || '';
+  } else {
+    stage.innerHTML = slides.map((s,i)=>
+      `<div class="plabel">Slide ${i+1} / ${slides.length}</div>${s}`).join('');
+  }
+</script>
+</body>
+</html>
